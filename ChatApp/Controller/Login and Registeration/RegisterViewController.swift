@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class RegisterViewController: UIViewController {
     
@@ -84,11 +85,10 @@ class RegisterViewController: UIViewController {
     
     private let imageView: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(systemName: "person")
+        image.image = UIImage(systemName: "person.circle")
         image.layer.masksToBounds = true
         image.contentMode = .scaleAspectFit
-        image.layer.borderWidth = 1.0
-        image.layer.borderColor = UIColor.link.cgColor
+
         return image
     }()
     private let registerButton: UIButton = {
@@ -168,6 +168,8 @@ class RegisterViewController: UIViewController {
     @objc private func registerButtonTapped(){
         emailTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
+        firstNameTextField.resignFirstResponder()
+        lastNameTextField.resignFirstResponder()
         
         
         // this code checks if the fields are NOT empty
@@ -184,12 +186,34 @@ class RegisterViewController: UIViewController {
             alertUserLoginError()
             return
         }
-        
+        DatabaseManager.shared.userExists(with: email, completion: { [weak self] exists in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            guard !exists else{
+                strongSelf.alertUserLoginError(message: "user already exists")
+                return
+            }
+            
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password, completion: { authResult, error in
+                
+                guard authResult != nil, error == nil else {
+                    print("error creating user")
+                    return
+                }
+                DatabaseManager.shared.insertUser(with: chatAppUser(firstName: firstName, lastName: lastName, emailAdress: email))
+                
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            })
+        })
+    
+  
     }
     
-    func alertUserLoginError(){
+    func alertUserLoginError(message: String = "Please enter all info to create a new account"){
         
-        let alert = UIAlertController(title: "Something went wrong!", message: "Please enter all info to create a new account", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Something went wrong!", message: message, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "dismiss", style: .cancel, handler: nil))
         present(alert, animated: true)
