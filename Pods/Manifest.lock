@@ -419,12 +419,14 @@ PODS:
   - SDWebImage/Core (5.9.1)
 
 DEPENDENCIES:
+  - FBSDKLoginKit
   - Firebase/Analytics
   - Firebase/Auth
   - Firebase/Database
   - Firebase/RemoteConfig
   - Firebase/Storage
   - FirebaseUI
+  - GoogleSignIn
 
 SPEC REPOS:
   trunk:
@@ -489,6 +491,6 @@ SPEC CHECKSUMS:
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
   SDWebImage: a990c053fff71e388a10f3357edb0be17929c9c5
 
-PODFILE CHECKSUM: f68f17aea88f6e6e7ecb9af54eb97c9ff3331f62
+PODFILE CHECKSUM: 1412cae5dea0210695e756e0c1de26a4270c6aaf
 
 COCOAPODS: 1.9.3

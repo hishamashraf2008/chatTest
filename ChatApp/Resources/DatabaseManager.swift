@@ -14,10 +14,16 @@ final class DatabaseManager {
     
     private let database = Database.database().reference()
     
+    
+    
 }
 extension DatabaseManager{
     func userExists(with email: String, completion: @escaping ((Bool) -> Void)){
-        database.child(email).observeSingleEvent(of: .value, with: { snapshot in
+        var safeEmail = email.replacingOccurrences(of: ".", with: "-")
+        safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
+        
+        database.child(safeEmail).observeSingleEvent(of: .value, with: { snapshot in
+          // replacing some signs in the email with - because some signs cant be stored in a child
             guard snapshot.value as? String != nil else {
                 completion(false)
                 return
@@ -26,7 +32,7 @@ extension DatabaseManager{
         })
     }
     func insertUser(with user: chatAppUser){
-        database.child(user.emailAdress).setValue([
+        database.child(user.safeEmail).setValue([
             "first_Name": user.firstName,
             "last_Name": user.lastName
         ])
@@ -38,5 +44,11 @@ struct chatAppUser{
     let emailAdress: String
     // let profilePictureURL: URL
     // password is not included to increase security
+    
+    var safeEmail: String {
+        var safeEmail = emailAdress.replacingOccurrences(of: ".", with: "-")
+        safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-") // replacing some signs in the email with - because some signs cant be stored in a child
+        return safeEmail
+    }
 }
 
