@@ -3,7 +3,13 @@
 
 target 'ChatApp' do
   use_frameworks!
-
+  
+  
+pod 'MessageKit'
+pod 'JGProgressHUD'
+pod 'RealmSwift'
+pod 'SDWebImage'
+  
 # firebase pods
   pod 'Firebase/Analytics'
   pod 'Firebase/RemoteConfig'
