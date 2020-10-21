@@ -209,7 +209,26 @@ class RegisterViewController: UIViewController {
                     print("error creating user")
                     return
                 }
-                DatabaseManager.shared.insertUser(with: chatAppUser(firstName: firstName, lastName: lastName, emailAdress: email))
+                let chatUser = chatAppUser(firstName: firstName,
+                                           lastName: lastName,
+                                           emailAdress: email)
+                DatabaseManager.shared.insertUser(with: chatUser, completion: {success in
+                    if success {
+                        guard let image = self?.imageView.image, let data = image.pngData() else {
+                            return
+                        }
+                        let fileName = chatUser.profilePictureFileName
+                        StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
+                            switch result{
+                            case .success(let downloadURL):
+                                UserDefaults.standard.set(downloadURL, forKey: "profile_picture_url")
+                                print(downloadURL)
+                            case .failure(let error):
+                                print("storage manager Error: \(error)")
+                            }
+                        })
+                    }
+                } )
                 
                 strongSelf.navigationController?.dismiss(animated: true, completion: nil)
             })

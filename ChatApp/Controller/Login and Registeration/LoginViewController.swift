@@ -130,7 +130,7 @@ class LoginViewController: UIViewController {
                                          y: emailTextField.bottom+10,
                                          width: scrollView.width-60,
                                          height: 52)
-        
+       
         loginButton.frame = CGRect(x: 50,
                                    y: passwordTextField.bottom+20,
                                    width: scrollView.width-90,
@@ -243,7 +243,14 @@ extension LoginViewController: LoginButtonDelegate {
             let lastName = nameComponents[1]
             DatabaseManager.shared.userExists(with: email, completion: {exists in
                 if !exists{
-                    DatabaseManager.shared.insertUser(with: chatAppUser(firstName: firstName, lastName: lastName, emailAdress: email))
+                    let chatUser = chatAppUser(firstName: firstName,
+                                               lastName: lastName,
+                                               emailAdress: email)
+                    DatabaseManager.shared.insertUser(with: chatUser, completion: {success in
+                        if success {
+                            
+                        }
+                    })
                 }
             })
             

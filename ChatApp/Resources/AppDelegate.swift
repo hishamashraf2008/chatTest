@@ -62,7 +62,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate{
         
         DatabaseManager.shared.userExists(with: email, completion: {exists in
             if !exists {
-                DatabaseManager.shared.insertUser(with: chatAppUser(firstName: firstName, lastName: lastName, emailAdress: email))
+                let chatUser = chatAppUser(firstName: firstName,
+                                           lastName: lastName,
+                                           emailAdress: email)
+                DatabaseManager.shared.insertUser(with: chatUser, completion: {success in
+                    if success {
+                        
+                    }
+                    
+                })
             }
         })
         
